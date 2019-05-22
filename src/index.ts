@@ -3,12 +3,14 @@ import {reimbursementRouter} from './routes/reimbursement-router'
 import { loginRouter } from './routes/login-router';
 import { userRouter } from './routes/user-router';
 import { logMiddleware } from './middleware/log-middleware';
-import bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
+import { sessionMiddleware } from './middleware/session-middleware';
 
 const app = express()
 
 app.use(logMiddleware)
-app.use(bodyParser)
+app.use(bodyParser.json())
+app.use(sessionMiddleware)
 
 
 app.get('/', (req, res) =>{

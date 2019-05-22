@@ -1,10 +1,81 @@
 import express from 'express'
-import { User } from '../models/user'
-import { Users } from '../data-holder';
+import { authorization } from '../middleware/auth-middleware';
+import { getAllUsers, UserByID, updateUser } from '../dao/user.dao';
+import { loginUser } from '../dao/login.dao';
+
 
 export const userRouter = express.Router();
 
-userRouter.get('', (req,res)=>{
-    res.json(Users)
+//Get users
+userRouter.get('',[authorization(['finance-manager']), async (req,res)=>{
+    res.json(await getAllUsers())
+}])
+
+
+
+//lets make a login endpoint
+userRouter.post('/login', async (req, res)=>{
+    const {username, password} = req.body
+    const user = await loginUser(username, password)
+
+    if(user){
+        req.session.user = user
+        res.send(req.session)// don't send them the session
+        //we send them their user object
+    } else{
+        res.sendStatus(401)
+    }
 })
 
+
+//Find User by ID
+userRouter.get('/:id', async (req,res)=>{
+    let inputId = +req.params.id
+    let user = null
+    let authRoles = ['finance-manager']
+
+    let isAuth = false
+
+    //make sure user is logged in, otherwise user will be undefined
+    if(!req.session.user){
+        res.sendStatus(401)
+    }
+    //make sure user has at least one role in authroles
+    for(let userRole of req.session.user.role){
+        if(authRoles.includes(userRole.roleName)){
+            isAuth = true
+        }
+    } 
+
+    if(isAuth){
+        user = await UserByID(inputId)
+    } else if(inputId === req.session.user.userId){ 
+        user = await UserByID(req.session.user.userId)
+    } else{
+        user = null
+    }
+
+    
+    if(user){
+        res.json(user)
+    } else {
+        res.sendStatus(403)
+    }
+})
+
+
+//Update User 
+userRouter.patch('', [authorization(['admin']), async (req,res)=>{
+    let { userId } = req.body
+    let user = await UserByID(userId)
+
+    if(user){
+        await updateUser(req.body)
+        res.json(req.body)
+    } else{
+        res.sendStatus(401)
+    }
+}])
+
+//Update Reimbursement
+//reimbursementRouter.patch('')
