@@ -74,6 +74,3 @@ userRouter.patch('', [authorization(['admin']), async (req,res)=>{
         res.sendStatus(401)
     }
 }])
-
-//Update Reimbursement
-//reimbursementRouter.patch('')

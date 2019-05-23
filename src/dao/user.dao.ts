@@ -59,8 +59,6 @@ export async function UserByID(userId:number){
         let userQuery = await client.query(`SELECT * FROM "Proj0".users WHERE users_id = $1`, [userId])
         let roleQuery = await client.query(`SELECT * FROM "Proj0".roles WHERE user_roles_id = $1`, [userId])
 
-        console.log(userQuery.rows)
-
         let fullUser = sqlUsertojsUSer(userQuery.rows[0])
         let fullRole = [] 
 

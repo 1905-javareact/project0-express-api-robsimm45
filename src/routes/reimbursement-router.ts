@@ -1,6 +1,7 @@
 import express from 'express'
 import { authorization } from '../middleware/auth-middleware';
 import { statusReimbursement, userReimbursement } from '../dao/reimbursement.dao';
+import { updateReimService, newReimService } from '../service/reimbursement.service';
 export const reimbursementRouter = express.Router()
 
 //Find Reimbursements By Status
@@ -31,10 +32,24 @@ reimbursementRouter.get('/author/userId/:id', [authorization(['finance-manager']
 
 //Submit Reimbursement
 reimbursementRouter.post('/', async (req, res)=>{
+    let {body} = req
+    let reim = await newReimService(body)
 
+    if(reim){
+        res.json(reim)
+    }else{
+        res.sendStatus(401)
+    }
 })
 
 //update a reimbursement
 reimbursementRouter.patch('/', [authorization(['finance-manager']), async (req,res)=>{
-    
+    let { reimId } = req.body
+    let reim = await updateReimService(reimId, req)
+
+    if(reim){
+        res.json(201)
+    } else{
+        res.sendStatus(401)
+    }
 }])
