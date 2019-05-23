@@ -5,12 +5,14 @@ import { userRouter } from './routes/user-router';
 import { logMiddleware } from './middleware/log-middleware';
 import bodyParser from 'body-parser';
 import { sessionMiddleware } from './middleware/session-middleware';
+import { corsfilter } from './middleware/corsfilter-middleware';
 
 const app = express()
 
 app.use(logMiddleware)
 app.use(bodyParser.json())
 app.use(sessionMiddleware)
+app.use(corsfilter)
 
 
 app.get('/', (req, res) =>{
@@ -19,7 +21,7 @@ app.get('/', (req, res) =>{
 
 app.use('/login', loginRouter)
 app.use('/users', userRouter)
-app.use('/reimbursment', reimbursementRouter)
+app.use('/reimbursement', reimbursementRouter)
 
 app.listen(9050, ()=>{
     console.log('app has started')

@@ -20,8 +20,7 @@ userRouter.post('/login', async (req, res)=>{
 
     if(user){
         req.session.user = user
-        res.send(req.session)// don't send them the session
-        //we send them their user object
+        res.send(req.session)
     } else{
         res.sendStatus(401)
     }
@@ -36,11 +35,10 @@ userRouter.get('/:id', async (req,res)=>{
 
     let isAuth = false
 
-    //make sure user is logged in, otherwise user will be undefined
     if(!req.session.user){
         res.sendStatus(401)
     }
-    //make sure user has at least one role in authroles
+
     for(let userRole of req.session.user.role){
         if(authRoles.includes(userRole.roleName)){
             isAuth = true
