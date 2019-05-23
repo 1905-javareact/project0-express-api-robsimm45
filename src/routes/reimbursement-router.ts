@@ -1,13 +1,12 @@
 import express from 'express'
 import { authorization } from '../middleware/auth-middleware';
-import { statusReimbursement, userReimbursement } from '../dao/reimbursement.dao';
-import { updateReimService, newReimService } from '../service/reimbursement.service';
+import { updateReimService, newReimService, userReimbursementService, statusReimbursementService } from '../service/reimbursement.service';
 export const reimbursementRouter = express.Router()
 
 //Find Reimbursements By Status
 reimbursementRouter.get('/status/:id', [authorization(['finance-manager']), async (req,res) =>{
     const statusId = +req.params.id
-    let reimbursement = await statusReimbursement(statusId) 
+    let reimbursement = await statusReimbursementService(statusId) 
 
     if(reimbursement){
         res.json(reimbursement)
@@ -21,7 +20,7 @@ reimbursementRouter.get('/status/:id', [authorization(['finance-manager']), asyn
 //Find Reimbursements By User
 reimbursementRouter.get('/author/userId/:id', [authorization(['finance-manager']), async (req, res) =>{
     const userId = +req.params.id
-    let reimbursement = await userReimbursement(userId)
+    let reimbursement = await userReimbursementService(userId)
 
     if(reimbursement){
         res.json(reimbursement)

@@ -95,9 +95,12 @@ export async function updateUser(newUser:User){
         }
         
         await client.query('COMMIT')
+
+        return newUser
     } catch(err){//check for what kind of error and send back appropriate custom error
         console.log(err)
         await client.query('ROLLBACK')
+        return null
     } finally {
         client && client.release()
     }

@@ -1,5 +1,16 @@
-import { findReimByID, updateReim, inputReim } from "../dao/reimbursement.dao";
+import { findReimByID, updateReim, inputReim, userReimbursement, statusReimbursement } from "../dao/reimbursement.dao";
 import { Reimbursement } from "../models/Reimbursement";
+
+
+export async function userReimbursementService(userId:number){
+    return userReimbursement(userId)
+}
+
+
+export async function statusReimbursementService(stat:number){
+    return statusReimbursement(stat)
+}
+
 
 export async function updateReimService(reimId:number, request){
     if(await findReimByID(reimId)){
