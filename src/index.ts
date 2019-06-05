@@ -6,13 +6,21 @@ import { logMiddleware } from './middleware/log-middleware';
 import bodyParser from 'body-parser';
 import { sessionMiddleware } from './middleware/session-middleware';
 import { corsfilter } from './middleware/corsfilter-middleware';
+import cors from 'cors'
 
 const app = express()
 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}))
+
+
+app.use(corsfilter)
 app.use(logMiddleware)
 app.use(bodyParser.json())
 app.use(sessionMiddleware)
-app.use(corsfilter)
+
 
 
 app.get('/', (req, res) =>{
